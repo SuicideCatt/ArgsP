@@ -9,7 +9,7 @@ Dependents:
 
 Step 1: Download
 ```bash
-git clone URL
+git clone https://github.com/SuicideCatt/ArgsP
 cd ArgsP
 mkdir build
 cd build
