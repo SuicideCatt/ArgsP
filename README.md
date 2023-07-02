@@ -21,9 +21,15 @@ $ cmake ..
 $ make -j$(nproc)
 # make install
 ```
-OR Step 2: Linux no compile
+
+### Only headers mode:
+Step 1: No build but install on Linux 
 ```bash
 $ cmake .. -DSCT_NO_BUILD
 # make install
 ```
-
+And Step 2: 
+```cpp
+#define USE_SCT_ArgsP_HM
+#include <SCT/ArgumentsParser/ArgumentsParser.hpp>
+```
