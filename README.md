@@ -21,7 +21,7 @@ $ cmake ..
 $ make -j$(nproc)
 # make install
 ```
-
+---
 ### Only headers mode:
 Step 1: No build but install on Linux 
 ```bash
@@ -33,7 +33,7 @@ And Step 2:
 #define USE_SCT_ArgsP_HM
 #include <SCT/ArgumentsParser/ArgumentsParser.hpp>
 ```
-
+---
 ### How to use
 ```cpp
 namespace Args = SCT::ArgsP::Arguments;
