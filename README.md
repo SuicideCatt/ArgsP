@@ -8,6 +8,9 @@ Dependents:
 - C++ 20
 -- -
 ### How to download and install
+[AUR package](https://aur.archlinux.org/packages/sct_argsp)
+
+#### Source
 Step 1: Download
 ```bash
 git clone https://github.com/SuicideCatt/ArgsP
