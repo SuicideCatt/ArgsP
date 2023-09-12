@@ -9,7 +9,8 @@ namespace SCT::ArgsP::Flags
 		void error(const char*);
 	}
 
-	SCT_ArgsP_INL consteval Info::Info(size_t pc, std::string_view n)
+	SCT_ArgsP_INL consteval
+		Info::Info(const size_t& pc, const std::string_view& n)
 		: prefix_count(pc), name(n)
 	{
 		if (pc < 1)

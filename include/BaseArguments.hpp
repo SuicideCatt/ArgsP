@@ -1,28 +1,30 @@
 #pragma once
 
-#include "Defines.hpp"
-
 #include "Base.hpp"
 
 namespace SCT::ArgsP::Arguments
 {
-	template<typename  Type>
+	template<typename Type>
+	using ValueParsePtr = void(*)(Type&, const std::string_view&);
+
+	template<typename _Type, ValueParsePtr<_Type> _ValueParsePtr = nullptr>
 	class Base : public ArgsP::Base
 	{
 	public:
-		using element_type = Type;
-		using reference = Type&;
-		using const_reference = const Type&;
+		using Type = _Type;
 
-		using SPtr = std::shared_ptr<Base<Type>>;
-
-		SCT_ArgsP_INL Base(const Type& base_value);
-		SCT_ArgsP_INL virtual ~Base();
+		SCT_ArgsP_INL Base(const Type& base_value = Type());
+		virtual ~Base() = default;
 
 		SCT_ArgsP_INL const Type& get() const noexcept;
+		SCT_ArgsP_INL operator const Type&() const noexcept;
+		SCT_ArgsP_INL const Type& operator*() const noexcept;
 
 	protected:
-		Type p_value;
+		virtual bool parse(SCT_ArgsP_parse_parameters) override;
+		virtual void parse_value(const std::string_view& new_value);
+
+	 	Type p_value;
 	};
 }
 

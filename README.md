@@ -6,36 +6,37 @@ Dependents:
 - Git
 - CMake
 - C++ 20
-
+-- -
+### How to download and install
 Step 1: Download
 ```bash
 git clone https://github.com/SuicideCatt/ArgsP
 cd ArgsP
+```
+
+Step 2 v1: Copy include folder to your thrid party folder
+``` bash
+cp include /path/to/include/ArgsP
+```
+
+Step 2 v2: Create folder for cmake cache
+``` bash
 mkdir build
 cd build
 ```
 
-Step 2: Linux
+Step 3: Install Linux or MSYS2
 ```bash
 $ cmake ..
-$ make -j$(nproc)
 # make install
 ```
-
-### Only headers mode:
-Step 1: No build but install on Linux 
-```bash
-$ cmake .. -DSCT_NO_BUILD
-# make install
-```
-And Step 2: 
-```cpp
-#define USE_SCT_ArgsP_HM
-#include <SCT/ArgumentsParser/ArgumentsParser.hpp>
-```
-
+-- -
 ### How to use
 ```cpp
+#include <SCT/ArgsP/ArgsP.hpp>
+
+// ...
+
 namespace Args = SCT::ArgsP::Arguments;
 namespace Flags = SCT::ArgsP::Flags;
 
@@ -44,29 +45,29 @@ namespace Flags = SCT::ArgsP::Flags;
 SCT::ArgsP::Parser p = '-';
 
 // V1
-	Args::String::SPtr a_str(new Args::String("base_value"));
+	Args::String a_str("base_value");
 // V2
-	Args::String::SPtr a_str(new Args::String()); // base value is ""
+	Args::String a_str; // base value is ""
 
 // V1
-	Args::Int64::SPtr a_i(new Args::Int64(7));
+	Args::Int64 a_i(7);
 // V2
-	Args::Int64::SPtr a_i(new Args::Int64()); // base value is 0
+	Args::Int64 a_i; // base value is 0
 
 // V1
-	Flags::String::SPtr f_str(new Flags::String({{1, "str"}, {2, "string"}}, "empty"));
+	Flags::String f_str({{1, "str"}, {2, "string"}}, "empty");
 // V2
-	Flags::String::SPtr f_str(new Flags::String({{1, "str"}, {2, "string"}})); // base is ""
+	Flags::String::SPtr f_str({{1, "str"}, {2, "string"}}); // base is ""
 
 // V1
-	Flags::Int64::SPtr f_i(new Flags::Int64({{1, "i"}, {2, "int"}}, 7));
+	Flags::Int64::SPtr f_i({{1, "i"}, {2, "int"}}, 7);
 // V2
-	Flags::Int64::SPtr f_i(new Flags::Int64({{1, "i"}, {2, "int"}})); // base is 0
+	Flags::Int64::SPtr f_i({{1, "i"}, {2, "int"}}); // base is 0
 
 // V1
-	Flags::Bool::SPtr f_b(new Flags::Bool({{1, "b"}, {2, "bool"}}, true));
+	Flags::Bool::SPtr f_b({{1, "b"}, {2, "bool"}}, true);
 // V2
-	Flags::Bool::SPtr f_b(new Flags::Bool({{1, "b"}, {2, "bool"}})); // base is false
+	Flags::Bool::SPtr f_b({{1, "b"}, {2, "bool"}}); // base is false
 
 // V1
 	p.add_arguments(a_str, a_i, f_str, f_i, f_b);
@@ -77,9 +78,9 @@ SCT::ArgsP::Parser p = '-';
 	// ...
 	
 std::cout << "prog: " << p.parse(args, argv) << '\n'; // Print executable file name
-std::cout << "  a_str: " << a_str->get() << '\n';
-std::cout << "  a_i: " << a_i->get() << '\n';
-std::cout << "  f_str: " << f_str->get() << '\n';
-std::cout << "  f_i: " << f_i->get() << '\n';
-std::cout << "  f_b: " << f_b->get() << '\n';
+std::cout << "  a_str: " << *a_str << '\n';
+std::cout << "  a_i: " << *a_i << '\n';
+std::cout << "  f_str: " << *f_str << '\n';
+std::cout << "  f_i: " << *f_i << '\n';
+std::cout << "  f_b: " << *f_b << '\n';
 ```
