@@ -1,13 +1,12 @@
 # ArgsP
 C++ Arguments parser
 
-### Build
+### Install
 Dependents:
 - Git
 - CMake
 - C++ 20
--- -
-### How to download and install
+
 [AUR package](https://aur.archlinux.org/packages/sct_argsp)
 
 #### Source
