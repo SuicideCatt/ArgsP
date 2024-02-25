@@ -59,17 +59,17 @@ SCT::ArgsP::Parser p = '-';
 // V1
 	Flags::String f_str({{1, "str"}, {2, "string"}}, "empty");
 // V2
-	Flags::String::SPtr f_str({{1, "str"}, {2, "string"}}); // base is ""
+	Flags::String f_str({{1, "str"}, {2, "string"}}); // base is ""
 
 // V1
-	Flags::Int64::SPtr f_i({{1, "i"}, {2, "int"}}, 7);
+	Flags::Int64 f_i({{1, "i"}, {2, "int"}}, 7);
 // V2
-	Flags::Int64::SPtr f_i({{1, "i"}, {2, "int"}}); // base is 0
+	Flags::Int64 f_i({{1, "i"}, {2, "int"}}); // base is 0
 
 // V1
-	Flags::Bool::SPtr f_b({{1, "b"}, {2, "bool"}}, true);
+	Flags::Bool f_b({{1, "b"}, {2, "bool"}}, true);
 // V2
-	Flags::Bool::SPtr f_b({{1, "b"}, {2, "bool"}}); // base is false
+	Flags::Bool f_b({{1, "b"}, {2, "bool"}}); // base is false
 
 // V1
 	p.add_arguments(a_str, a_i, f_str, f_i, f_b);
