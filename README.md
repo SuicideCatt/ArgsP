@@ -1,88 +1,186 @@
 # ArgsP
-C++ Arguments parser
 
-### Install
-Dependents:
-- Git
-- CMake
-- C++ 20
+Simple arguments parser for C++20.
 
-[AUR package](https://aur.archlinux.org/packages/sct_argsp)
+## Usage
+- Exceptions
+	```cpp
+	// In this example, all errors are thrown as exceptions.
 
-#### Source
-Step 1: Download
-```bash
-git clone https://github.com/SuicideCatt/ArgsP
-cd ArgsP
-```
+	#include <ArgsP.hpp>
+	#include <iostream>
+	#include <iomanip>
 
-Step 2 v1: Copy include folder to your thrid party folder
-``` bash
-cp include /path/to/include/ArgsP
-```
+	int main(int argc, char** argv)
+	{
+		using namespace SCT::ArgsP;
 
-Step 2 v2: Create folder for cmake cache
-``` bash
-mkdir build
-cd build
-```
+		// first parameter is prefix symbol count
+		Parameters::Int64 res_h({Base::Info{1, "h"}});
+		// default value
+		Parameters::Int64 res_w({{1, "w"}}, 100);
+		// multiple names for same flag
+		Flag::Bool help({{1, "h"}, {2, "help"}});
+		// capture argument without flag or parameter prefix
+		Arguments::String path = "/tmp/test.html";
 
-Step 3: Install Linux or MSYS2
-```bash
-$ cmake ..
-# make install
-```
--- -
-### How to use
-```cpp
-#include <SCT/ArgsP/ArgsP.hpp>
+		// prefix symbol is '-'
+		Parser p = '-';
+		p.add_arguments(help, path, res_w, res_h);
 
-// ...
+		auto program = p.parse(argc, argv);
+		std::cout << *program << ":\n";
+		std::cout << "  help(bool):   " << *help << '\n';
+		std::cout << "  path(string): " << std::quoted(*path) << '\n';
+		std::cout << "  res_w(int):   " << *res_w << '\n';
+		std::cout << "  res_h(int):   " << *res_h << '\n';
+		std::cout << '\n';
 
-namespace Args = SCT::ArgsP::Arguments;
-namespace Flags = SCT::ArgsP::Flags;
-
-// ...
-
-SCT::ArgsP::Parser p = '-';
-
-// V1
-	Args::String a_str("base_value");
-// V2
-	Args::String a_str; // base value is ""
-
-// V1
-	Args::Int64 a_i(7);
-// V2
-	Args::Int64 a_i; // base value is 0
-
-// V1
-	Flags::String f_str({{1, "str"}, {2, "string"}}, "empty");
-// V2
-	Flags::String f_str({{1, "str"}, {2, "string"}}); // base is ""
-
-// V1
-	Flags::Int64 f_i({{1, "i"}, {2, "int"}}, 7);
-// V2
-	Flags::Int64 f_i({{1, "i"}, {2, "int"}}); // base is 0
-
-// V1
-	Flags::Bool f_b({{1, "b"}, {2, "bool"}}, true);
-// V2
-	Flags::Bool f_b({{1, "b"}, {2, "bool"}}); // base is false
-
-// V1
-	p.add_arguments(a_str, a_i, f_str, f_i, f_b);
-// V2
-	p.add_argument(a_str);
-	p.add_argument(a_i);
-	p.add_argument(f_str);
+		return 0;
+	}
+	```
+- Error code
+	```cpp
 	// ...
-	
-std::cout << "prog: " << p.parse(args, argv) << '\n'; // Print executable file name
-std::cout << "  a_str: " << *a_str << '\n';
-std::cout << "  a_i: " << *a_i << '\n';
-std::cout << "  f_str: " << *f_str << '\n';
-std::cout << "  f_i: " << *f_i << '\n';
-std::cout << "  f_b: " << *f_b << '\n';
-```
+
+	// If the no-exceptions compile flag is used,
+	// this parameter is always false.
+	Parser p('-', false);
+	p.add_arguments(help, path, res_w, res_h);
+
+	auto program = p.parse(argc, argv);
+	if (p.error())
+	{
+		// ArgsP::Error::Exception is a subclass of std::system_error
+		const ArgsP::Error::Exception& ex = p.get_error_container().get_error();
+
+		// Print error
+		if (error.argument.size()) // maybe ""
+			std::cout << error.argument << '=';
+		std::cout << std::quoted(error.value);
+		std::cout << ": " << error.code().message() << '\n';
+		// Or use std::exception::what();
+		std::cout << "what(): " << error.what() << '\n';
+
+		return 1;
+	}
+
+	std::cout << *program << ":\n";
+	std::cout << "  help(bool):   " << *help << '\n';
+	std::cout << "  path(string): " << std::quoted(*path) << '\n';
+	std::cout << "  res_w(int):   " << *res_w << '\n';
+	std::cout << "  res_h(int):   " << *res_h << '\n';
+	std::cout << '\n';
+
+	return 0;
+	// ...
+	```
+
+Execution examples:
+-	```
+	$ ./test --help
+	./test:
+	  help(bool):   1
+	  path(string): "/tmp/test.html"
+	  res_w(int):   100
+	  res_h(int):   0
+	```
+-	```
+	$ ./test -h /test
+	./test:
+	  help(bool):   1
+	  path(string): "/test"
+	  res_w(int):   100
+	  res_h(int):   0
+	```
+-	```
+	$ ./test /test -w=10 -h 600
+	./test:
+	  help(bool):   0
+	  path(string): "/test"
+	  res_w(int):   10
+	  res_h(int):   600
+	```
+
+## Adding a custom parameter/argument
+- Simple and flexible approach (passing a function for standard types)
+	```cpp
+	#include <ArgsP.hpp>
+
+	namespace ArgsP = SCT::ArgsP;
+
+	struct Resolution
+	{
+	    int width, height;
+	};
+
+	// Creates a function for parsing a string to value
+	ArgsP::Error::Code parse_resolution(Resolution& value, std::string_view new_value)
+	{
+		auto i = new_value.find('x');
+		if (i == new_value.npos) // Returns an error if 'x' symbol is missing
+			return ArgsP::Error::Code::syntax_error;
+
+		// Uses alternative to std::stoi. Doesn't throw errors;
+		// just returns either error or a value
+		auto width = ArgsP::str_to<uint32_t>(new_value.substr(0, i));
+		if (!width.has_value())
+			return width.error();
+
+		auto height = ArgsP::str_to<uint32_t>(new_value.substr(i + 1));
+		if (!height)
+			return height.error();
+
+		value.width = width.value_or();
+		value.height = height.value_or();
+
+		return ArgsP::Error::Code::no_error;
+	}
+
+	// Uses the default Parameter/Argument implementation and parse function
+	using ResolutionParameter = ArgsP::Base::Parameter<Resolution, &parse_resolution>;
+	using ResolutionArgument = ArgsP::Base::Argument<Resolution, &parse_resolution>;
+
+	// ...
+	```
+- Less flexible approach (creating a subclass with custom parsing logic)
+	```cpp
+	// ...
+
+	// Creates subclass of default Parameter
+	struct ResolutionParameter : ArgsP::Base::Parameter<Resolution>
+	{
+		ResolutionParameter(Infos names, Resolution base = {100, 100})
+			: ArgsP::Base::Parameter<Resolution>(names, base) {}
+
+		// Overrides the 'parse_value' method to parse the resolution
+		// Default 'parse_value' tries to call the parse function
+		ArgsP::Error::Code parse_value(std::string_view new_value) override
+		{
+			auto i = new_value.find('x');
+			if (i == new_value.npos)
+				return ArgsP::Error::Code::syntax_error;
+
+			auto width = ArgsP::str_to<uint32_t>(new_value.substr(0, i));
+			if (!width)
+				return width.error();
+
+			auto height = ArgsP::str_to<uint32_t>(new_value.substr(i + 1));
+			if (!height)
+				return height.error();
+
+			// 'p_value' is defined in the parent class.
+			p_value.width = width.value_or();
+			p_value.height = height.value_or();
+
+			return ArgsP::Error::Code::no_error;
+		}
+	};
+
+	// ...
+	```
+
+## TODO
+- [ ] Add RPM package
+- [ ] Add Arch package
+
