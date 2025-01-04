@@ -102,6 +102,15 @@ Execution examples:
 	  res_h(int):   600
 	```
 
+## Download or Install
+- [You can download one header version!](https://github.com/SuicideCatt/ArgsP/releases/latest)
+- Debian package available on [releases](https://github.com/SuicideCatt/ArgsP/releases/latest)
+
+	```bash
+	$ curl -o ArgsP.deb -L $URL
+	# dpkg -i ArgsP.deb
+	```
+
 ## Adding a custom parameter/argument
 - Simple and flexible approach (passing a function for standard types)
 	```cpp
