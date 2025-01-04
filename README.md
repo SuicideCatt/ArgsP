@@ -110,6 +110,11 @@ Execution examples:
 	$ curl -o ArgsP.deb -L $URL
 	# dpkg -i ArgsP.deb
 	```
+- ArchLinux package available on [AUR](https://aur.archlinux.org/packages/sct_argsp)
+
+	```bash
+	$ yay -S sct_argsp
+	```
 
 ## Adding a custom parameter/argument
 - Simple and flexible approach (passing a function for standard types)
@@ -191,5 +196,5 @@ Execution examples:
 
 ## TODO
 - [ ] Add RPM package
-- [ ] Add Arch package
+- [x] Add Arch package
 
