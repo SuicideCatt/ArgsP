@@ -1,0 +1,9 @@
+Package: ArgsP
+Version: __PASTE_VERSION__
+Section: libdevel
+Priority: optional
+Architecture: all
+Essential: no
+Maintainer: SuicideCatt <random.cat.from.internet@gmail.com>
+Description: Simple arguments parser for C++20.
+Depends: g++ (>= 12.0.0)
