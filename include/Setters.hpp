@@ -2,19 +2,25 @@
 
 #pragma once
 
+#include "StringTo.hpp"
 #include "Defines.hpp"
 
-#include <string>
+#include <string_view>
 #include <cstdint>
 
 namespace SCT::ArgsP::Setters
 {
-	SCT_ArgsP_INL void
-		parse(std::string_view& value, const std::string_view& new_value);
-	SCT_ArgsP_INL void parse(bool& value, const std::string_view& new_value);
+	enum class IntBase
+	{
+		automatic = 0, bin = 2, dec = 10, hex = 16
+	};
 
-	template<int Base = 0>
-	SCT_ArgsP_INL void parse(int64_t& value, const std::string_view& new_value);
+	SCT_ArgsP_INL
+		Error::Code parse(std::string_view& value, std::string_view new_value);
+	SCT_ArgsP_INL Error::Code parse(bool& value, std::string_view new_value);
+
+	template<IntBase base = IntBase::automatic>
+	SCT_ArgsP_INL Error::Code parse(int64_t& value, std::string_view new_value);
 }
 
 #include "ipp/Setters.hpp"

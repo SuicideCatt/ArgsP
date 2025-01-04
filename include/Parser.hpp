@@ -1,30 +1,41 @@
 #pragma once
 
-#include "Base.hpp"
+#include "Base/Base.hpp"
+#include "Error.hpp"
 
 #include <list>
+#include <optional>
 
 namespace SCT::ArgsP
 {
 	class Parser final
 	{
 	public:
-		SCT_ArgsP_INL Parser(const char& prefix);
+		SCT_ArgsP_INL Parser(char prefix, bool throw_error = true);
 
-		SCT_ArgsP_INL void add_argument(Base& argument);
+		SCT_ArgsP_INL void add_argument(Base::Base& argument);
 
 		template<IsArgument... Args>
 		SCT_ArgsP_INL void add_arguments(Args&... args);
 
-		SCT_ArgsP_INL const std::string_view parse(int argc, char* argv[]);
-		SCT_ArgsP_INL void parse_no_program(int argc, char* argv[]);
+		SCT_ArgsP_INL
+			std::optional<std::string_view> parse(int argc, char* argv[]);
+		SCT_ArgsP_INL bool parse_no_program(int argc, char* argv[]);
 
-		SCT_ArgsP_INL const std::string_view parse(const Argv& argv);
-		SCT_ArgsP_INL void parse_no_program(Argv argv);
+		SCT_ArgsP_INL std::optional<std::string_view> parse(const ArgV& argv);
+		SCT_ArgsP_INL bool parse_no_program(const ArgV& argv);
+
+		SCT_ArgsP_INL bool error() const noexcept;
+		SCT_ArgsP_INL
+			const Error::Container& get_error_container() const noexcept;
 
 	private:
-		std::list<Base*> m_args;
+		using Itr = ArgV::const_iterator;
+		SCT_ArgsP_INL bool parse_no_program_impl(Itr arg, Itr end);
+
 		char m_prefix;
+		std::unique_ptr<Error::Container> m_error;
+		std::list<Base::Base*> m_args;
 	};
 }
 

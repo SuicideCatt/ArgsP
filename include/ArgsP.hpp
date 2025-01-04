@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Defines.hpp"
 #include "Arguments.hpp"
-#include "Flags.hpp"
+#include "Defines.hpp"
+#include "Flag.hpp"
+#include "Parameters.hpp"
 #include "Parser.hpp"
