@@ -11,6 +11,8 @@ namespace SCT::ArgsP::Error
 	{
 		switch (static_cast<Code>(errc))
 		{
+		case Code::no_error:
+			return "No error";
 		case Code::can_not_parse_program_argument:
 			return "Can't parse program argument";
 		case Code::no_function_for_parse_value:
@@ -25,7 +27,7 @@ namespace SCT::ArgsP::Error
 			return "Out of range";
 
 		default:
-			return "No error code: " + std::to_string(errc);
+			return "Unknown error code (" + std::to_string(errc) + ')';
 		};
 	}
 
@@ -51,12 +53,7 @@ namespace SCT::ArgsP::Error
 									   Code code, std::source_location src)
 		: system_error(make_error_code(code), arg + "='" + value + '\''),
 		  argument(std::move(arg)), value(std::move(value)), location(src) {}
-}
-
-namespace SCT::ArgsP
-{
+	
 	SCT_ArgsP_INL std::error_code make_error_code(Error::Code code)
-	{
-		return std::error_code(static_cast<int>(code), Error::get_category());
-	}
+		{ return {static_cast<int>(code), Error::get_category()}; }
 }

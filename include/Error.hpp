@@ -43,11 +43,13 @@ namespace SCT::ArgsP::Error
 		const std::string argument, value;
 		const std::source_location location;
 	};
+	
+	SCT_ArgsP_INL std::error_code make_error_code(Error::Code code);
 }
 
 namespace SCT::ArgsP
 {
-	SCT_ArgsP_INL std::error_code make_error_code(Error::Code code);
+	using Error::make_error_code;
 
 	// Bad version of std::expected(C++23)
 	template<typename _Result, typename _Error>
