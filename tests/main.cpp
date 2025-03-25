@@ -57,7 +57,5 @@ int main(int argc, char** argv)
 	t({"test7", "-w", "0b011"}); // binary!
 	t({"test8", "-w", "0xF"}); // hex!
 
-	new int[10];
-
 	return 0;
 }
