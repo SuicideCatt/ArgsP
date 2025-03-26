@@ -31,10 +31,6 @@ namespace SCT::ArgsP::Error
 		};
 	}
 
-	SCT_ArgsP_INL std::error_condition
-		Category::default_error_condition(int errc) const noexcept
-		{ return std::error_condition(errc, *this); }
-
 	SCT_ArgsP_INL const Category& get_category()
 	{
 		static Category instance;

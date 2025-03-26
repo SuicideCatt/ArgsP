@@ -24,8 +24,6 @@ namespace SCT::ArgsP::Error
 	{
 		SCT_ArgsP_INL const char* name() const noexcept override;
 		SCT_ArgsP_INL std::string message(int errc) const override;
-		SCT_ArgsP_INL std::error_condition
-			default_error_condition(int errc) const noexcept override;
 	};
 
 	SCT_ArgsP_INL const Category& get_category();
@@ -115,10 +113,6 @@ namespace std
 {
 	template<>
 	struct is_error_code_enum<SCT::ArgsP::Error::Code>
-		: public true_type {};
-
-	template<>
-	struct is_error_condition_enum<SCT::ArgsP::Error::Code>
 		: public true_type {};
 }
 
