@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(ArgsP VERSION 0.2.0)
+project(ArgsP VERSION 0.3.0)
 
 option(TESTS "Enable tests" OFF)
 
