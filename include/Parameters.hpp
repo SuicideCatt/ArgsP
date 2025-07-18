@@ -9,5 +9,9 @@ namespace SCT::ArgsP::Parameters
 	using Base = ArgsP::Base::Parameter<Type, parse_function>;
 
 	using String = Base<std::string_view, &Setters::parse>;
+
 	using Int64 = Base<int64_t, &Setters::parse>;
+	using UInt64 = Base<uint64_t, &Setters::parse>;
+
+	using Double = Base<double, &Setters::parse>;
 }
