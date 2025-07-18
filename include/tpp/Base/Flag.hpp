@@ -16,6 +16,7 @@ namespace SCT::ArgsP::Base
 		for (auto& [pc, f] : p_names)
 		{
 			if (!DarkSide::check_prefix(pc, prefix, *iterator)) continue;
+
 			auto offset = iterator->find('=');
 			if (iterator->substr(pc, offset - pc) != f) continue;
 
