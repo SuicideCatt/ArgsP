@@ -1,5 +1,6 @@
 #include <ArgsP.hpp>
 
+#include <cassert>
 #include <iostream>
 #include <iomanip>
 
@@ -34,7 +35,7 @@ int main(int argc, char** argv)
 			std::cout << ": " << error.code().message() << '\n';
 
 			std::cout << '\n';
-			return;
+			return false;
 		}
 
 		std::cout << *program << ":\n";
@@ -44,18 +45,26 @@ int main(int argc, char** argv)
 		std::cout << "  res_h(int):   " << *res_h << '\n';
 
 		std::cout << '\n';
+		return true;
 	};
 
-	t({"test1", "-h", "-w=1z2", "/path", "-h", "120"});
-	t({"test2", "--help", "--res_w=12", "/path", "--res_h", "120"});
-	t({"test3", "--help", "/path", "--res_h", "120"});
-	t({"test4", "-w", "120"});
+	assert(t({"test0", "-", "--", "---"})); // ignore test
 
-	t({"test5", "-h=2", "123"}); // error test
-	t({"test6", "-h", "-w=123.f"}); // error test
+	assert(t({"test1", "-h", "-w=1z2", "/path", "-h", "120"}) == false);
+	assert(t({"test2", "--help", "--res_w=12", "/path", "--res_h", "120"}));
+	assert(t({"test3", "--help", "/path", "--res_h", "120"}));
+	assert(t({"test4", "-w", "120"}));
+	assert(t({"test5", "-w", "1"})); // small int check
 
-	t({"test7", "-w", "0b011"}); // binary!
-	t({"test8", "-w", "0xF"}); // hex!
+	// "-h=2" fails because first variant of "-h" first variant "-h" is bool flag,
+	// parser expects it to be used without a value.
+	assert(t({"test6", "-h=2", "123"}) == false);
+
+	// "-w" is int parameter
+	assert(t({"test7", "-h", "-w=123.f"}) == false);
+
+	assert(t({"test8", "-w", "0b011"})); // binary!
+	assert(t({"test9", "-w", "0xF"})); // hex!
 
 	return 0;
 }
