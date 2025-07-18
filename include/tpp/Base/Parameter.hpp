@@ -7,6 +7,9 @@ namespace SCT::ArgsP::Base::DarkSide
 	SCT_ArgsP_INL bool
 		check_prefix(size_t c, char p, std::string_view t)
 	{
+		if (t.size() <= c)
+			return false;
+
 		t = t.substr(0, c);
 		return t.find_last_not_of(p) == t.npos;
 	}
