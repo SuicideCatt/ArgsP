@@ -12,7 +12,7 @@ namespace SCT::ArgsP::DarkSide
 		str_to(std::string_view str, size_t* index, Base... base) noexcept
 	{
 		static_assert(sizeof...(Base) <= 1, "too many arguments passed");
-	
+
 		auto begin = str.data();
 		auto end = begin + str.size();
 
@@ -32,7 +32,6 @@ namespace SCT::ArgsP::DarkSide
 
 		if (ptr != end)
 			return Error::Code::invalid_value;
-
 
 		if (index)
 			*index = ptr - begin;

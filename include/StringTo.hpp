@@ -2,7 +2,7 @@
 
 #include "Error.hpp"
 
-#include <string>
+#include <string_view>
 
 namespace SCT::ArgsP
 {
