@@ -12,12 +12,13 @@ int main(int argc, char** argv)
 
 		Flag::Bool help({{1, "h"}, {2, "help"}});
 		Arguments::String path;
-		Parameters::Int64 res_w({{1, "w"}, {2, "res_w"}}, 100);
-		Parameters::Int64 res_h({{1, "h"}, {2, "res_h"}}, 100);
+		Parameters::UInt64 res_w({{1, "w"}, {2, "res_w"}}, 100);
+		Parameters::UInt64 res_h({{1, "h"}, {2, "res_h"}}, 100);
+		Parameters::Double scale({{1, "s"}, {2, "scale"}}, 1.0);
 
 		Parser p('-', false);
 
-		p.add_arguments(help, path, res_w, res_h);
+		p.add_arguments(help, path, res_w, res_h, scale);
 
 		for (const auto& arg : argv)
 			std::cout << arg << ' ';
@@ -41,8 +42,9 @@ int main(int argc, char** argv)
 		std::cout << *program << ":\n";
 		std::cout << "  help(bool):   " << *help << '\n';
 		std::cout << "  path(string): " << std::quoted(*path) << '\n';
-		std::cout << "  res_w(int):   " << *res_w << '\n';
-		std::cout << "  res_h(int):   " << *res_h << '\n';
+		std::cout << "  res_w(uint):   " << *res_w << '\n';
+		std::cout << "  res_h(uint):   " << *res_h << '\n';
+		std::cout << "  scale(double):   " << *scale << '\n';
 
 		std::cout << '\n';
 		return true;
@@ -60,11 +62,14 @@ int main(int argc, char** argv)
 	// parser expects it to be used without a value.
 	assert(t({"test6", "-h=2", "123"}) == false);
 
-	// "-w" is int parameter
+	// "-w" is usigned int parameter
 	assert(t({"test7", "-h", "-w=123.f"}) == false);
+	assert(t({"test8", "-w=-123"}) == false);
 
-	assert(t({"test8", "-w", "0b011"})); // binary!
-	assert(t({"test9", "-w", "0xF"})); // hex!
+	assert(t({"test9", "-w", "0b011"})); // binary!
+	assert(t({"test10", "-w", "0xF"})); // hex!
+
+	assert(t({"test11", "-s", "10.10"})); // floating!
 
 	return 0;
 }
