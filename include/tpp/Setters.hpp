@@ -32,7 +32,7 @@ namespace SCT::ArgsP::Setters
 		auto res = str_to<Type>(new_value, nullptr, b);
 		if (res)
 		{
-			v = res.value_or();
+			v = res.value_or(0);
 			return Error::Code::no_error;
 		}
 
@@ -45,7 +45,7 @@ namespace SCT::ArgsP::Setters
 		auto res = str_to<Type>(new_value);
 		if (res)
 		{
-			v = res.value_or();
+			v = res.value_or(0);
 			return Error::Code::no_error;
 		}
 
