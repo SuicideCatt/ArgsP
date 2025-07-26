@@ -41,7 +41,7 @@ namespace SCT::ArgsP::Error
 		const std::string argument, value;
 		const std::source_location location;
 	};
-	
+
 	SCT_ArgsP_INL std::error_code make_error_code(Error::Code code);
 }
 
@@ -69,8 +69,8 @@ namespace SCT::ArgsP
 		SCT_ArgsP_INL bool has_value() const noexcept;
 		SCT_ArgsP_INL operator bool() const noexcept;
 
-		SCT_ArgsP_INL const Result&
-			value_or(const Result& default_value = Result()) const noexcept;
+		SCT_ArgsP_INL
+			const Result& value_or(const Result& default_value) const noexcept;
 
 		// Retunr 0 if no error
 		SCT_ArgsP_INL Error error() const noexcept;
