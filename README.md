@@ -145,8 +145,8 @@ Execution examples:
 		if (!height)
 			return height.error();
 
-		value.width = width.value_or();
-		value.height = height.value_or();
+		value.width = width.value_or(0);
+		value.height = height.value_or(0);
 
 		return ArgsP::Error::Code::no_error;
 	}
@@ -184,8 +184,8 @@ Execution examples:
 				return height.error();
 
 			// 'p_value' is defined in the parent class.
-			p_value.width = width.value_or();
-			p_value.height = height.value_or();
+			p_value.width = width.value_or(0);
+			p_value.height = height.value_or(0);
 
 			return ArgsP::Error::Code::no_error;
 		}
