@@ -25,8 +25,8 @@ ArgsP::Error::Code
 	if (!height)
 		return height.error();
 
-	value.width = width.value_or();
-	value.height = height.value_or();
+	value.width = width.value_or(0);
+	value.height = height.value_or(0);
 
 	return ArgsP::Error::Code::no_error;
 }
