@@ -57,8 +57,8 @@ namespace SCT::ArgsP
 		using Result = _Result;
 		using Error = _Error;
 
-		SCT_ArgsP_INL VariantResult(const Result& value) noexcept;
-		SCT_ArgsP_INL VariantResult(Error error) noexcept;
+		SCT_ArgsP_INL VariantResult(const _Result& value) noexcept;
+		SCT_ArgsP_INL VariantResult(_Error error) noexcept;
 
 		VariantResult(const VariantResult&) = default;
 		VariantResult& operator=(const VariantResult&) = default;
