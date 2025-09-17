@@ -28,8 +28,9 @@ int main(int argc, char** argv)
 		if (p.error())
 		{
 			const auto& error = p.get_error_container().get_error();
-			std::cout << "what(): " << error.what() << '\n';
+			std::cout << "  std::exception::what(): " << error.what() << '\n';
 
+			std::cout << "  error: ";
 			if (error.argument.size())
 				std::cout << error.argument << '=';
 			std::cout << std::quoted(error.value);
