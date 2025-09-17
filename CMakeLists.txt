@@ -13,6 +13,8 @@ if(TESTS)
 	add_subdirectory(tests)
 endif()
 
+add_library(${PROJECT_NAME} INTERFACE ./include)
+
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
 	    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SCT/${PROJECT_NAME})
 install(FILES LICENSE
