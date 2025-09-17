@@ -5,8 +5,9 @@
 #include "StringTo.hpp"
 #include "Defines.hpp"
 
-#include <string_view>
 #include <cstdint>
+#include <optional>
+#include <string_view>
 
 namespace SCT::ArgsP::Setters
 {
@@ -14,6 +15,17 @@ namespace SCT::ArgsP::Setters
 	{
 		automatic = 0, bin = 2, dec = 10, hex = 16
 	};
+
+	SCT_ArgsP_INL Error::Code parse(std::optional<std::string_view>& value,
+									std::string_view new_value);
+
+	template<std::integral Type, IntBase base = IntBase::automatic>
+	SCT_ArgsP_INL Error::Code parse(std::optional<Type>& value,
+									std::string_view new_value);
+
+	template<std::floating_point Type>
+	SCT_ArgsP_INL Error::Code parse(std::optional<Type>& value,
+									std::string_view new_value);
 
 	SCT_ArgsP_INL
 		Error::Code parse(std::string_view& value, std::string_view new_value);
