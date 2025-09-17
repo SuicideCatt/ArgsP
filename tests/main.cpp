@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 
 		std::cout << *program << ":\n";
 		std::cout << "  help(bool):   " << *help << '\n';
-		std::cout << "  path(string): " << std::quoted(*path) << '\n';
+		std::cout << "  path(string): " << std::quoted(path.value_or("")) << '\n';
 		std::cout << "  res_w(uint):   " << *res_w << '\n';
 		std::cout << "  res_h(uint):   " << *res_h << '\n';
 		std::cout << "  scale(double):   " << *scale << '\n';
