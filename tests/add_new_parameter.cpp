@@ -9,7 +9,7 @@ struct Resolution
 };
 
 ArgsP::Error::Code
-	parse_resolution(Resolution& value, std::string_view new_value)
+	parse_resolution(std::optional<Resolution>& value, std::string_view new_value)
 {
 	auto i = new_value.find('x');
 	if (i == new_value.npos)
@@ -25,21 +25,20 @@ ArgsP::Error::Code
 	if (!height)
 		return height.error();
 
-	value.width = width.value_or(0);
-	value.height = height.value_or(0);
+	auto& val = value.emplace();
+	val.width = width.value_or(0);
+	val.height = height.value_or(0);
 
 	return ArgsP::Error::Code::no_error;
 }
 
-using ResolutionParameter =
-	ArgsP::Base::Parameter<Resolution, &parse_resolution>;
-using ResolutionArgument = ArgsP::Base::Argument<Resolution, &parse_resolution>;
+using ResolutionParameter = ArgsP::Parameters::Base<Resolution, &parse_resolution>;
+using ResolutionArgument =  ArgsP::Arguments::Base<Resolution, &parse_resolution>;
 
-
-struct AltResolutionParameter : ArgsP::Base::Parameter<Resolution>
+struct AltResolutionParameter : ArgsP::Parameters::Base<Resolution>
 {
-	AltResolutionParameter(Infos names, Resolution base = {100, 100})
-		: ArgsP::Base::Parameter<Resolution>(names, base) {}
+	AltResolutionParameter(Infos names, OptType base = Resolution{100, 100})
+		: Parameter(names, base) {}
 
 	ArgsP::Error::Code parse_value(std::string_view new_value) override
 		{ return parse_resolution(p_value, new_value); }
@@ -63,13 +62,13 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	const auto& res_ref = *res;
-	const auto& alt_res_ref = *alt_res;
 	std::cout << *program << ":\n";
-	std::cout << "  res(WxH): " << res_ref.width << 'x'
-			  << res_ref.height << '\n';
-	std::cout << "  alt_res(WxH): " << alt_res_ref.width << 'x'
-			  << alt_res_ref.height << '\n';
+	{
+		auto r = res.value_or({});
+		std::cout << "  res(WxH): " << r.width << 'x' << r.height << '\n';
+	}
+	const auto& alt_res_ref = *alt_res;
+	std::cout << "  alt_res(WxH): " << alt_res_ref.width << 'x' << alt_res_ref.height << '\n';
 
 	return 0;
 }
