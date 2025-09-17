@@ -16,13 +16,14 @@ Simple arguments parser for C++20.
 		using namespace SCT::ArgsP;
 
 		// first parameter is prefix symbol count
+		// NOTE: default is std::nullopt
 		Parameters::Int64 res_h({Base::Info{1, "h"}});
-		// default value
+		// default value is 100
 		Parameters::Int64 res_w({{1, "w"}}, 100);
 		// multiple names for same flag
-		Flag::Bool help({{1, "h"}, {2, "help"}});
+		Flag::Bool help({{2, "help"}});
 		// capture argument without flag or parameter prefix
-		Arguments::String path = "/tmp/test.html";
+		Arguments::String path("/tmp/test.html");
 
 		// prefix symbol is '-'
 		Parser p = '-';
@@ -33,7 +34,7 @@ Simple arguments parser for C++20.
 		std::cout << "  help(bool):   " << *help << '\n';
 		std::cout << "  path(string): " << std::quoted(*path) << '\n';
 		std::cout << "  res_w(int):   " << *res_w << '\n';
-		std::cout << "  res_h(int):   " << *res_h << '\n';
+		std::cout << "  res_h(int):   " << res_h.value_or(0) << '\n';
 		std::cout << '\n';
 
 		return 0;
@@ -51,8 +52,8 @@ Simple arguments parser for C++20.
 	auto program = p.parse(argc, argv);
 	if (p.error())
 	{
-		// ArgsP::Error::Exception is a subclass of std::system_error
-		const ArgsP::Error::Exception& ex = p.get_error_container().get_error();
+		// SCT::ArgsP::Error::Exception is a subclass of std::system_error
+		const Error::Exception& error = p.get_error_container().get_error();
 
 		// Print error
 		if (error.argument.size()) // maybe ""
@@ -69,7 +70,7 @@ Simple arguments parser for C++20.
 	std::cout << "  help(bool):   " << *help << '\n';
 	std::cout << "  path(string): " << std::quoted(*path) << '\n';
 	std::cout << "  res_w(int):   " << *res_w << '\n';
-	std::cout << "  res_h(int):   " << *res_h << '\n';
+	std::cout << "  res_h(int):   " << res_h.value_or(0) << '\n';
 	std::cout << '\n';
 
 	return 0;
@@ -86,9 +87,9 @@ Execution examples:
 	  res_h(int):   0
 	```
 -	```
-	$ ./test -h /test
+	$ ./test /test
 	./test:
-	  help(bool):   1
+	  help(bool):   0
 	  path(string): "/test"
 	  res_w(int):   100
 	  res_h(int):   0
@@ -101,6 +102,20 @@ Execution examples:
 	  res_w(int):   10
 	  res_h(int):   600
 	```
+
+## Supported types
+- Flag
+	- Bool
+- Arguments
+	- String
+	- Int64
+	- UInt64
+	- Double
+- Parameters
+	- String
+	- Int64
+	- UInt64
+	- Double
 
 ## Download or Install
 - [You can download one header version!](https://github.com/SuicideCatt/ArgsP/releases/latest)
@@ -129,7 +144,7 @@ Execution examples:
 	};
 
 	// Creates a function for parsing a string to value
-	ArgsP::Error::Code parse_resolution(Resolution& value, std::string_view new_value)
+	ArgsP::Error::Code parse_resolution(std::optional<Resolution>& value, std::string_view new_value)
 	{
 		auto i = new_value.find('x');
 		if (i == new_value.npos) // Returns an error if 'x' symbol is missing
@@ -145,15 +160,16 @@ Execution examples:
 		if (!height)
 			return height.error();
 
-		value.width = width.value_or(0);
-		value.height = height.value_or(0);
+		auto& val = value.emplace();
+		val.width = width.value_or(0);
+		val.height = height.value_or(0);
 
 		return ArgsP::Error::Code::no_error;
 	}
 
 	// Uses the default Parameter/Argument implementation and parse function
-	using ResolutionParameter = ArgsP::Base::Parameter<Resolution, &parse_resolution>;
-	using ResolutionArgument = ArgsP::Base::Argument<Resolution, &parse_resolution>;
+	using ResolutionParameter = ArgsP::Parameters::Base<Resolution, &parse_resolution>;
+	using ResolutionArgument = ArgsP::Arguments::Base<Resolution, &parse_resolution>;
 
 	// ...
 	```
@@ -162,10 +178,10 @@ Execution examples:
 	// ...
 
 	// Creates subclass of default Parameter
-	struct ResolutionParameter : ArgsP::Base::Parameter<Resolution>
+	struct ResolutionParameter : ArgsP::Parameters::Base<Resolution>
 	{
-		ResolutionParameter(Infos names, Resolution base = {100, 100})
-			: ArgsP::Base::Parameter<Resolution>(names, base) {}
+		ResolutionParameter(Infos names, OptType base = Resolution{100, 100})
+			: Parameter(names, base) {}
 
 		// Overrides the 'parse_value' method to parse the resolution
 		// Default 'parse_value' tries to call the parse function
@@ -184,8 +200,9 @@ Execution examples:
 				return height.error();
 
 			// 'p_value' is defined in the parent class.
-			p_value.width = width.value_or(0);
-			p_value.height = height.value_or(0);
+			auto& val = p_value.emplace();
+			val.width = width.value_or(0);
+			val.height = height.value_or(0);
 
 			return ArgsP::Error::Code::no_error;
 		}
