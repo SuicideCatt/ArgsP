@@ -23,10 +23,9 @@ namespace SCT::ArgsP
 	SCT_ArgsP_INL VariantResult<_Result, _Error>::operator bool() const noexcept
 		{ return has_value(); }
 
-	template<typename _Result, typename _Error>
-	SCT_ArgsP_INL const _Result&
-		VariantResult<_Result, _Error>::value_or(in_Result default_value)
-																const noexcept
+	template<typename Result, typename Error>
+	SCT_ArgsP_INL Result VariantResult<Result, Error>
+		::value_or(Result&& default_value) const noexcept
 		{ return has_value()? std::get<1>(to_parrent()) : default_value; }
 
 	template<typename _Result, typename _Error>

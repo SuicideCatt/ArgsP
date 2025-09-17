@@ -69,14 +69,12 @@ namespace SCT::ArgsP
 		SCT_ArgsP_INL bool has_value() const noexcept;
 		SCT_ArgsP_INL operator bool() const noexcept;
 
-		SCT_ArgsP_INL
-			const Result& value_or(const Result& default_value) const noexcept;
+		SCT_ArgsP_INL Result value_or(Result&& default_value) const noexcept;
 
 		// Retunr 0 if no error
 		SCT_ArgsP_INL Error error() const noexcept;
 
 	private:
-		using in_Result = const Result&;
 		using Base = std::variant<_Error, _Result>;
 
 		Base& to_parrent() noexcept;
